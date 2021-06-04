@@ -30,4 +30,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: jetci-operator
-  namespace: default
+  namespace: jetci

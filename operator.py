@@ -463,6 +463,7 @@ def operator_loop():
 
             if jetci_obj == False:
                 print("get_jetci_yaml() returned false.")
+                set_build_status(event['object']['metadata']['namespace'], event['object']['metadata']['name'], "Failed to pull .jetci.yaml")
 
             else:
                 # TODO: Need to lint.

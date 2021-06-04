@@ -22,3 +22,5 @@ spec:
         env:
         - name:  JETCI_MODE
           value: operator
+        - name: PYTHONUNBUFFERED
+          value: "1"
