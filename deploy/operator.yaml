@@ -18,7 +18,7 @@ spec:
       containers:
       - image: scalabledelivery/jetci:v1alpha1
         name: jetci-operator
-        imagePullPolicy: always
+        imagePullPolicy: Always
         env:
         - name:  JETCI_MODE
           value: operator

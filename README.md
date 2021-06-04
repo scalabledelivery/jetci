@@ -19,6 +19,14 @@ The replicas can be increased, this controller can handle claiming builds withou
 
 An example deployment is available in `deploy/operator.yaml`.
 
+Here's a quick install:
+```
+$ kubectl create ns jetci
+$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/crds.yaml
+$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/rbac.yaml
+$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/operator.yaml
+```
+
 A build can be manually initiated like so:
 ```
 $ cat <<EOF | kubectl apply -f -
