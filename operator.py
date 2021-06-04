@@ -463,7 +463,7 @@ def operator_loop():
 
             if jetci_obj == False:
                 print("get_jetci_yaml() returned false.")
-                build_log(event['object']['metadata']['namespace'], event['object']['metadata']['name'], '@jetci', '@jetci', command, res['output'], "Failed to pull .jetci.yaml")
+                build_log(event['object']['metadata']['namespace'], event['object']['metadata']['name'], '@jetci', '@jetci', "@jetci-log", "Failed to pull .jetci.yaml", "failed")
                 set_build_status(event['object']['metadata']['namespace'], event['object']['metadata']['name'], "Failed")
 
             else:
