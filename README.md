@@ -1,19 +1,8 @@
 # JetCI
 Simple CI that natively operates on Kubernetes.
 
-# CRDs
-The JetCI CRDs are used to configure repositories and it also facilitates the build queue.
-
-```
-$ kubectl apply -f deploy/crds.yaml
-```
-
-An example repository is available in `deploy/repo-example.yaml`. For example of what a JetCI secret might look like, check out `jetci-secret-example.yaml`.
-
-For the operator and webhook to work, a configured service account is provided in `deploy/rbac.yaml`.
-
 # Operator
-When new builds are made, the JetCI operator will grab the `.jetci.yaml` from the configured git repository and run those pipelines as pods in the namespace that the repository is configured in.
+When new builds are made, the JetCI operator will grab the `.jetci.yaml` from the configured git repository and run those pipelines as pods in the namespace that the repository is configured in. The file `example.jetci.yaml` is an example of `.jetci.yaml` features.
 
 The replicas can be increased, this controller can handle claiming builds without a leader.
 

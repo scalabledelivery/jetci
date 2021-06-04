@@ -5,6 +5,9 @@ Priority goes to the top of the list.
 # Requirements for `v1alpha1` to `v1beta1`
 These are the milestone requirements to become `v1beta1` software.
 
+## Service Containers
+Need to be able to have service containers. For example, a docker:dind-rootless container that can do builds. 
+
 ## webhook endpoint
 An endpoint for general webhooks is neccessary. The build env should include variables that were posted.
 
@@ -17,6 +20,8 @@ Debugging information needs to be made available.
 Right now all build status and log updates are handled only by the lock object `run_locker`. This can be changed as an optimization. The only reason a single lock was used was to simplify development.
 
 ## Rules engine - Auth required in namespace
+
+## Rules engine - Allow Privileged Containers
 
 ## Rules engine - MaxTimeout
 

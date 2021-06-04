@@ -1,0 +1,41 @@
+pipelines:
+- name: echo-pipeline
+  #volumes: [] # See pod spec
+  containers:
+    - name: container-1
+      #volumeMounts: [] # See pod spec
+      image: alpine/git:latest
+      entrypoint: [ "/bin/sh", "-c", "sleep 86000s" ] # overrides container entrypoint
+      commands:
+      - [ "/bin/sh", "-c", "echo hello world" ]
+      - cat README.md
+      - pwd
+      - ls -lah
+      - touch testfile.txt
+
+    - name: container-2
+      image: alpine/git:latest
+      entrypoint: [ "/bin/sh", "-c", "sleep 86000s" ] # overrides container entrypoint
+      commands:
+      - pwd
+      - ls -lah
+      - touch testfile.txt
+      
+    - name: container-3
+      image: alpine/git:latest
+      entrypoint: [ "/bin/sh", "-c", "sleep 86000s" ] # overrides container entrypoint
+      env:
+      - name:  key1
+        value: val1
+      - name:  key2
+        value: val2
+        
+      commands:
+      - env
+
+- name: fail-here
+  containers:
+  - name: fail-test
+    image: nginx:latest
+    commands:
+    - [ "/bin/sh", "-c", "exit 1" ]
