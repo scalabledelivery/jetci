@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jetci-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: jetci-operator
+  template:
+    metadata:
+      labels:
+        name: jetci-operator
+    spec:
+      serviceAccountName: jetci-operator
+      automountServiceAccountToken: true
+      containers:
+      - image: scalabledelivery/jetci:v1alpha1
+        name: jetci-operator
+        imagePullPolicy: always
+        env:
+        - name:  JETCI_MODE
+          value: operator

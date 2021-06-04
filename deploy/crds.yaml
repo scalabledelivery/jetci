@@ -1,0 +1,227 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: builds.future.jetci.xyz
+spec:
+  group: future.jetci.xyz
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+
+    additionalPrinterColumns:
+    - name: Claimed By
+      type: string
+      description: "Operator running the build"
+      jsonPath: .claimedBy
+
+    - name: Status
+      type: string
+      description: "Status of the build"
+      jsonPath: .status
+
+    - name: Age
+      type: date
+      jsonPath: .metadata.creationTimestamp
+
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            required: [ "repository" ]
+            properties:
+
+              repository:
+                type: string
+
+
+              env:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: string
+
+                    # Making configmaps and secrets usable.
+                    valueFrom:
+                      type: object
+                      properties:
+                        configMapKeyRef:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            key:
+                              type: string
+                        secretKeyRef:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            key:
+                              type: string
+          status: # "Pending", "Running", "Complete", "Failed", Cancelled
+            type: string
+            default: "Pending"
+
+          claimedBy:
+            type: string
+            default: ""
+
+          pods:
+            default: []
+            type: array
+            items:
+              type: string
+
+          logs:
+            default: []
+            type: array
+            items:
+              type: object
+              properties:
+                pipelineName:
+                  type: string
+                command:
+                  type: string
+                output:
+                  type: string
+                container:
+                  type: string
+                status:
+                  type: string
+
+
+  scope: Namespaced
+  names:
+    plural: builds
+    singular: build
+    kind: Build
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  # name must match the spec fields below, and be in the form: <plural>.<group>
+  name: repositories.future.jetci.xyz
+spec:
+  # group name to use for REST API: /apis/<group>/<version>
+  group: future.jetci.xyz
+  
+  # list of versions supported by this CustomResourceDefinition
+  versions:
+  - name: v1alpha1
+    # Is this available in the API?
+    served: true
+    # One and only one version must be marked as the storage version.
+    storage: true
+
+    additionalPrinterColumns:
+    - name: Age
+      type: date
+      jsonPath: .metadata.creationTimestamp
+
+    schema:
+      openAPIV3Schema:
+        type: object
+        required: [ "spec" ]
+
+        # Stored values here
+        properties:
+          spec:
+            type: object
+            required: [ "repoPath" ]
+            properties:
+              repoPath:
+                type: string
+              repoBranch:
+                type: string
+
+              authType:
+                type: string
+                default: "none" # "none", "ssh", "http"
+
+              sshKey:
+                type: object
+                properties:
+                  secretName:
+                    type: string
+                  secretKeyPath:
+                    type: string
+                    default: "id_rsa"
+
+              httpAuthUsername:
+                type: object
+                properties:
+                  secretName:
+                    type: string
+                  secretKeyPath:
+                    type: string
+                    default: "http_auth_username"
+
+              httpAuthPassword:
+                type: object
+                properties:
+                  secretName:
+                    type: string
+                  secretKeyPath:
+                    type: string
+                    default: "http_auth_password"
+                
+              apiToken:
+                type: object
+                properties:
+                  secretName:
+                    type: string
+                  secretKeyPath:
+                    type: string
+                    default: "api_token"
+                
+              env:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: string
+                      
+                    # Making configmaps and secrets usable.
+                    valueFrom:
+                      type: object
+                      properties:
+                        configMapKeyRef:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            key:
+                              type: string
+                        secretKeyRef:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            key:
+                              type: string
+
+  # either Namespaced or Cluster
+  scope: Namespaced
+  names:
+    # plural name to be used in the URL: /apis/<group>/<version>/<plural>
+    plural: repositories
+    # singular name to be used as an alias on the CLI and for display
+    singular: repository
+    # kind is normally the CamelCased singular type. Your resource manifests use this.
+    kind: Repository
+    # shortNames allow shorter string to match your resource on the CLI
+    shortNames:
+    - repos
+    - repo

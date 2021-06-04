@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: repo-demo
+data:
+  myvalue: "3"
+
+---
+apiVersion: future.jetci.xyz/v1alpha1
+kind: Repository
+metadata:
+  name: some-repo
+spec:
+  repoPath: "git@github.com:username/repo.git" # Or: https://github.com/username/repo.git
+  repoBranch: "main"
+
+  env:
+    - name: varfromrepoconf
+      #value: could do this
+      valueFrom:
+        configMapKeyRef: # secretKeyRef also available
+          name: repo-demo
+          key: myvalue
+
+  # Repo authentication
+  authType: "ssh" # default:"none", "ssh", "http"
+  
+  # The SSH key is injected into the git containers
+  sshKey:
+    secretName: jetci-conf
+    secretKeyPath: "id_rsa"
+
+  # http auth example. Not yet implemented.
+  #httpAuthUsername:
+  #  secretName: jetci-conf
+  #  secretKeyPath: "http_auth_username"
+  #
+  #httpAuthPassword:
+  #  secretName: jetci-conf
+  #  secretKeyPath: "http_auth_password"
+
+  # The webhook endpoint uses this as a password
+  apiToken:
+    secretName: jetci-conf
+    secretKeyPath: "api_token"
+
