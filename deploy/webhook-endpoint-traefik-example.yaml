@@ -1,0 +1,47 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: jetci-webhook
+spec:
+  selector:
+    name: jetci-webhook
+  ports:
+  - protocol: TCP
+    port: 80
+    name: http
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediawiki-ingressroute-http
+  namespace: wiki-theman-page
+spec:
+  entryPoints:
+  - web
+  routes:
+  - kind: Rule
+    match: Host(`example.com`) && PathPrefix(`/`)
+    services:
+    - name: jetci-webhook
+      port: 80
+
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediawiki-ingressroute-http
+  namespace: wiki-theman-page
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`example.com`) && PathPrefix(`/`)
+    services:
+    - name: jetci-webhook
+      port: 80
+  tls:
+    certResolver: myresolver

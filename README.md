@@ -12,7 +12,7 @@ Here's a quick install:
 ```
 $ kubectl create ns jetci
 $ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/crds.yaml
-$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/rbac.yaml
+$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/operator-rbac.yaml
 $ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/operator.yaml
 ```
 
@@ -35,4 +35,15 @@ EOF
 Deleting a running build will also attempt to delete the pods it generated.
 
 # Webhook Endpoint
-This is coming soon. The webhook endpoint will create new builds when requests come in from places like Github.
+This provides an endpoint for automating build entries. From places like Github for example.
+
+`apiToken` is required to be set in the repository. The URL path looks like this:
+```
+/run_build?namespace=default&repository=some-repo&auth_token=pretty-random-token-here-thanks
+```
+
+Quick install:
+```
+$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/webhook-rbac.yaml
+$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/webhook.yaml
+```

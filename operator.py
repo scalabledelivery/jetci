@@ -294,7 +294,7 @@ def build_log(namespace, build_name, pipeline_name, container_name, command, out
     return True
 
 
-
+# TODO: Consolidate into shared.py
 def get_repo(namespace, reponame):
     try:
         repo = client.CustomObjectsApi().get_namespaced_custom_object(API_GROUP, API_VERSION, namespace, "repositories", reponame)

@@ -136,7 +136,7 @@ spec:
         properties:
           spec:
             type: object
-            required: [ "repoPath" ]
+            required: [ "repoPath", "apiToken" ]
             properties:
               repoPath:
                 type: string
@@ -173,9 +173,10 @@ spec:
                   secretKeyPath:
                     type: string
                     default: "http_auth_password"
-                
+
               apiToken:
                 type: object
+                required: [ "secretName", "secretKeyPath" ]
                 properties:
                   secretName:
                     type: string

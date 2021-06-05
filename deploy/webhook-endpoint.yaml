@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jetci-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: jetci-webhook
+  template:
+    metadata:
+      labels:
+        name: jetci-webhook
+    spec:
+      serviceAccountName: jetci-webhook
+      automountServiceAccountToken: true
+      containers:
+      - image: scalabledelivery/jetci:v1alpha1
+        name: jetci-webhook
+        imagePullPolicy: Always
+        env:
+        - name:  JETCI_MODE
+          value: webhook
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        ports:
+        - containerPort: 80
+          name: jetci-webhook-http
+          protocol: TCP

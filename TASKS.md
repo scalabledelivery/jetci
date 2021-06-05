@@ -8,9 +8,6 @@ These are the milestone requirements to become `v1beta1` software.
 ## Service Containers
 Need to be able to have service containers. For example, a docker:dind-rootless container that can do builds. 
 
-## webhook endpoint
-An endpoint for general webhooks is neccessary. The build env should include variables that were posted.
-
 ## Debugging and Error Logging Improvement
 Logging needs to be timestamped.
 Formatting needs to be cleaner... or easier to read.

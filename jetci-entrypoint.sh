@@ -6,7 +6,7 @@ case "${JETCI_MODE}" in
     ;;
 
   "webhook")
-    echo "Webhook is not available yet."
+    python3 /usr/src/webhook.py
     ;;
 
   *)
