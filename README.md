@@ -44,6 +44,9 @@ This provides an endpoint for automating build entries. From places like Github 
 
 Quick install:
 ```
-$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/webhook-rbac.yaml
-$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/webhook.yaml
+$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/webhook-endpoint-rbac.yaml
+$ kubectl -n jetci apply -f https://raw.githubusercontent.com/scalabledelivery/jetci/master/deploy/webhook-endpoint.yaml
 ```
+
+## How to Expose the Endpoint
+In `deploy/`, there is a service example and an example of using traefik to expose the endpoint.
