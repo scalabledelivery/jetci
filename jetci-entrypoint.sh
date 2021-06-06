@@ -6,7 +6,7 @@ case "${JETCI_MODE}" in
     ;;
 
   "webhook")
-    python3 /usr/src/webhook.py
+    python3 /usr/src/endpoint.py
     ;;
 
   *)
