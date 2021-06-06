@@ -5,8 +5,8 @@ Priority goes to the top of the list.
 # Requirements for `v1alpha1` to `v1beta1`
 These are the milestone requirements to become `v1beta1` software.
 
-## Service Containers
-Need to be able to have service containers. For example, a docker:dind-rootless container that can do builds. 
+## Timeouts
+Need `readinessTimeout` and `pipelineTimeout`.
 
 ## Debugging and Error Logging Improvement
 Logging needs to be timestamped.

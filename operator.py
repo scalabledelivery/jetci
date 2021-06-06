@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-from logging import exception
-from typing import final
 from kubernetes import client, config, watch
 from kubernetes.stream import stream
 from kubernetes.stream.ws_client import ERROR_CHANNEL
@@ -24,6 +22,11 @@ except:
 # TODO: Update this to an array of locks. I'm doing things this way because it should result in less mistakes in prototyping.
 # Something to help prevent pipeline threads from modifying the same build at the same time.
 run_locker = threading.Lock()
+
+def container_logging(namespace, build_name, pipeline_name, pod_name, container_name):
+    for log_entry in watch.Watch().stream(client.CoreV1Api().read_namespaced_pod_log, pod_name, namespace, container=container_name, follow=True, _preload_content=False):
+        build_log(namespace, build_name, pipeline_name, container_name, "-", log_entry, "-")
+    
 
 def execute_pipeline(namespace, build_name, pipeline_specification):
     # Generate the pod name
@@ -76,9 +79,18 @@ def execute_pipeline(namespace, build_name, pipeline_specification):
                 ],
                 "imagePullPolicy": "Always",
                 'env': [],
-                "restartPolicy": "Never"
+                "restartPolicy": "Never",
+                "securityContext": {}
         }
 
+
+        # Add readinessProbes
+        if 'readinessProbe' in container_specification:
+            container['readinessProbe'] = container_specification['readinessProbe']
+
+        # TODO: Need some rules engine to make it so that this isn't allowed by default.
+        if 'privileged' in container_specification and container_specification['privileged'] == True:
+            container['securityContext']['privileged'] = True
 
         if 'volumeMounts' in container_specification:
             for volume_mount in container_specification['volumeMounts']:
@@ -125,15 +137,34 @@ def execute_pipeline(namespace, build_name, pipeline_specification):
     # Wait for pod to be ready
     while True:
         resp = client.CoreV1Api().read_namespaced_pod(name=pod_name, namespace=namespace)
+        
         if resp.status.phase != 'Pending':
-            if resp.status.phase != 'Running':
+
+            all_ready = True
+
+            # Iterate the container ready statuses.
+            for cstat in resp.status.container_statuses:
+                if cstat.ready == False:
+                    all_ready = False # Still not ready
+
+            if all_ready and resp.status.phase != 'Running':
                 print("Expected", pod_name, "to be in the running phase, but it's phase is ", resp.status.phase)
                 return False
-            break
+            
+            if all_ready and resp.status.phase == 'Running':
+                break
+
         time.sleep(1)
+
 
     # Pod is ready, run commands in the containers
     for container_specification in pipeline_specification['containers']:
+        if 'commands' not in container_specification:
+            container_specification['commands'] = []
+        
+        # capture container output
+        threading.Thread(target=container_logging, args=[namespace, build_name, pipeline_specification['name'], pod_name, container_specification['name']]).start()
+
         for command in container_specification['commands']:
             # Exec command in container.
             res = pod_exec(namespace, pod_name, container_specification['name'], command)
@@ -468,7 +499,12 @@ def operator_loop():
 
             else:
                 # TODO: Need to lint.
-                jetci_obj = yaml.safe_load(jetci_obj)
+                try:
+                    jetci_obj = yaml.safe_load(jetci_obj)
+                except:
+                    print("Error loading contents from .jetci.yaml")
+                    set_build_status(event['object']['metadata']['namespace'], event['object']['metadata']['name'], "Failed")
+                    continue
 
                 # Pipeline convenience doctor
                 for i in range(len(jetci_obj['pipelines'])):
