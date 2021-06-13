@@ -16,7 +16,7 @@ spec:
       serviceAccountName: jetci-operator
       automountServiceAccountToken: true
       containers:
-      - image: scalabledelivery/jetci:v1alpha1
+      - image: ghcr.io/scalabledelivery/jetci:master
         name: jetci-operator
         imagePullPolicy: Always
         env:
