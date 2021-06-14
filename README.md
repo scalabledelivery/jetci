@@ -1,5 +1,16 @@
-# JetCI
-Simple CI that natively operates on Kubernetes.
+# JetCI (Archived)
+This repository is now archived. It was pretty cool to work on this, it's a very primitive example of making an operator that takes input and does work in a cloud native way with Python.
+
+The reason this is archived is because Cloud Native CI is already solved. Viktor Farcic has a really good video that [quickly compares Argo vs Tekton](https://www.youtube.com/watch?v=dAUpAq7hfeA).
+
+Instead of being an all-in-one solution, ArgoCD provides 3 components that enable good pipelines.
+https://github.com/argoproj/argo-cd
+https://github.com/argoproj/argo-workflows
+https://github.com/argoproj/argo-events
+
+Also there's Tekton: https://tekton.dev
+
+~~Simple CI that natively operates on Kubernetes.~~
 
 # Operator
 When new builds are made, the JetCI operator will grab the `.jetci.yaml` from the configured git repository and run those pipelines as pods in the namespace that the repository is configured in. The file `example.jetci.yaml` is an example of `.jetci.yaml` features.
